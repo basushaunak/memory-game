@@ -1,0 +1,44 @@
+.heading{
+    margin-inline:auto;
+    width: fit-content;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+.logo-container{
+    height: 90%;
+    overflow: hidden;
+}
+.logo{
+    height: 100%;
+    width: auto;
+    object-fit: cover;
+    object-position: center;
+}
+.title{
+    animation: glow 1.5s ease-in-out infinite alternate;
+    user-select: none;
+}
+@keyframes glow {
+    from {
+        text-shadow: 
+            0 0 1px #fff,
+            0 0 2px #fff,
+            0 0 3px #e60073,
+            0 0 4px #e60073,
+            0 0 5px #e60073,
+            0 0 5.5px #e60073,
+            0 0 6px #e60073;
+    }
+    to {
+        text-shadow: 
+            0 0 2px #fff,
+            0 0 3px #ff4da6,
+            0 0 4px #ff4da6,
+            0 0 5px #ff4da6,
+            0 0 5.5px #ff4da6,
+            0 0 6px #ff4da6,
+            0 0 6.5px #ff4da6;
+    }
+}

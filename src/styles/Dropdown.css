@@ -1,0 +1,29 @@
+.drop-down-container {
+  margin-inline-start: 2rem;
+  display: flex;
+  gap: 1rem;
+  font-size: 1.2rem;
+  color: white;
+}
+.drop-down {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: inherit;
+  line-height: inherit;
+  width: 100%;
+  min-width: 10ch;
+  max-width: 15ch;
+  border: 1px solid var(--select-border);
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1.1;
+  background-color: #fff;
+  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+}
