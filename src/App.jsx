@@ -14,23 +14,26 @@ export default function App() {
     right: "10px",
     position: "absolute",
   };
-  let items = [
+
+  const [cardDeck, setCardDeck] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [category, setCategory] = useState("select");
+  const [subCategory, setSubCategory] = useState("select");
+  const [error, setError] = useState(false);
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [imageSources, setimageSources] = useState([
+    { id: "select", name: "Select...", key: "select" },
     { id: "giphy", name: "Giphy", key: "giphy" },
     { id: "pokemon", name: "Pokemon", key: "pokemon" },
-  ];
-  let giphyTypes = [
+  ]);
+  const [giphyTypes, setGiphyTypes] = useState([
+    { id: "select", name: "Select...", key: "select" },
     { id: "animals", name: "Animals", key: "animals" },
     { id: "celebrities", name: "Celebrities", key: "celebrities" },
     { id: "cities", name: "Cities", key: "cities" },
     { id: "countries", name: "Countries", key: "countries" },
-  ];
-  const [cardDeck, setCardDeck] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState("pokemon");
-  const [subCategory, setSubCategory] = useState("animals");
-  const [error, setError] = useState(false);
-  const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  ]);
 
   function categoryChange(e) {
     setCategory(e.target.value);
@@ -62,6 +65,18 @@ export default function App() {
     }
     setCardDeck((oldDeck) => shuffleDeck(oldDeck));
   }
+
+  useEffect(() => {
+    if (category === "select") {
+      return;
+    }
+    if (imageSources[0].id === "select") {
+      setimageSources((prev) => prev.slice(1));
+    }
+    setSubCategory("select");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category]);
+
   useEffect(() => {
     if (score === 20) {
       alert(
@@ -71,11 +86,18 @@ export default function App() {
   }, [score]);
 
   useEffect(() => {
+    if (
+      category === "select" ||
+      (category === "giphy" && subCategory === "select")
+    ) {
+      setLoading(false);
+      setError(false);
+      setCardDeck(null);
+      return;
+    }
     let cancelled = false;
-
     setLoading(true);
     setError(false);
-
     async function loadDeck() {
       try {
         const deck = await buildDeck(category, subCategory);
@@ -102,13 +124,32 @@ export default function App() {
     };
   }, [category, subCategory]);
 
-  if (loading) return <p className="status">Loading deck. Please wait…</p>;
+  if (loading)
+    return (
+      <div className="status-container">
+        <p className="status">Loading deck. Please wait…</p>
+      </div>
+    );
   {
     if (error) return <p className="status">Failed to load deck.</p>;
   }
-
-  if (!cardDeck || cardDeck.length === 0) {
-    return <p className="status">Deck is empty.</p>;
+  if (
+    !(
+      category === "select" ||
+      (category === "giphy" && subCategory === "select")
+    )
+  ) {
+    if (!cardDeck || cardDeck.length === 0) {
+      return <p className="status">Deck is empty.</p>;
+    }
+  }
+  let acknowledgement = "Image/API Powered by: "
+  if(category==="giphy"){
+    acknowledgement += "Giphy.com"
+  }else if(category === "pokemon"){
+    acknowledgement += "freeCodeCamp"
+  }else{
+    acknowledgement = ""
   }
   return (
     <>
@@ -117,7 +158,7 @@ export default function App() {
 
       <div className="card-selector">
         <Dropdown
-          items={items}
+          items={imageSources}
           id="source"
           label="Source: "
           selectedItem={category}
@@ -133,13 +174,15 @@ export default function App() {
           />
         )}
       </div>
-      <div className="card-grid">
-        {cardDeck.map((card) => {
-          return <Card card={card} key={card.id} handleClick={cardClick} />;
-        })}
-      </div>
-      <div class="acknowledgement">
-        Image/API Powered by: {category === "giphy" ? "Giphy" : "freeCodeCamp"}
+      {cardDeck && (
+        <div className="card-grid">
+          {cardDeck.map((card) => {
+            return <Card card={card} key={card.id} handleClick={cardClick} />;
+          })}
+        </div>
+      )}
+      <div className="acknowledgement">
+        {acknowledgement}
       </div>
     </>
   );
